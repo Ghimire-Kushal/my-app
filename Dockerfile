@@ -15,16 +15,13 @@ RUN apt-get update && apt-get install -y \
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
-
 COPY . .
 
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Install Node dependencies
+# Install JS dependencies and build assets
 RUN npm install
-
-# Build frontend assets (Vite)
 RUN npm run build
 
 # Prepare SQLite & permissions
