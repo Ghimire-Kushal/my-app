@@ -21,7 +21,8 @@ RUN mkdir -p database \
     && chmod -R 777 storage \
     && chmod -R 777 bootstrap/cache
 
-RUN php artisan migrate --force
+# 🔥 Reset and migrate
+RUN php artisan migrate:fresh --force
 
 EXPOSE 10000
 
