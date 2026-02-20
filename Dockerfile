@@ -14,37 +14,29 @@ RUN apt-get update && apt-get install -y \
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Set working directory
 WORKDIR /app
 
 # Copy project files
 COPY . .
 
-# Install PHP dependencies (optimized)
+# Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Install Node dependencies and build Vite assets
+# Install JS dependencies & build Vite
 RUN npm install
 RUN npm run build
 
-# Prepare SQLite database & set permissions
+# Prepare SQLite & permissions
 RUN mkdir -p database \
     && touch database/database.sqlite \
     && chmod -R 775 storage bootstrap/cache database
 
-# Clear old Laravel caches (VERY IMPORTANT)
-RUN php artisan config:clear \
-    && php artisan cache:clear \
-    && php artisan route:clear \
-    && php artisan view:clear
-
-# Cache config for production (after clearing)
-RUN php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache
-
-# Expose port for Render
 EXPOSE 10000
 
-# Start application
-CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=10000
+# 🔥 IMPORTANT: Run artisan commands at runtime (not build time)
+CMD php artisan config:clear && \
+    php artisan cache:clear && \
+    php artisan route:clear && \
+    php artisan view:clear && \
+    php artisan migrate --force && \
+    php artisan serve --host=0.0.0.0 --port=10000
