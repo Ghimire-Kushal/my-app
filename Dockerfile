@@ -21,4 +21,4 @@ RUN composer install --no-dev --optimize-autoloader
 
 EXPOSE 10000
 
-CMD sh -c "rm -f database/database.sqlite && touch database/database.sqlite && php artisan migrate --force && php -S 0.0.0.0:10000 -t public"
+CMD sh -c "php artisan migrate:fresh --force && php -S 0.0.0.0:10000 -t public"
