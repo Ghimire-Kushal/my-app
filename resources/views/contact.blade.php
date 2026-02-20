@@ -1,44 +1,82 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>contact</title>
-</head>
-<body>
-    @extends('layouts.app')
+@extends('layouts.frontend')
 
 @section('content')
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card shadow">
-            <div class="card-body">
-                <h3 class="mb-4 text-center">Contact Me</h3>
 
-                <form>
-                    <div class="mb-3">
-                        <label>Name</label>
-                        <input type="text" class="form-control">
-                    </div>
+<section class="py-24 bg-white">
 
-                    <div class="mb-3">
-                        <label>Email</label>
-                        <input type="email" class="form-control">
-                    </div>
+    <div class="max-w-4xl mx-auto px-6">
 
-                    <div class="mb-3">
-                        <label>Message</label>
-                        <textarea class="form-control" rows="4"></textarea>
-                    </div>
+        {{-- Heading --}}
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-black">
+                Contact Me
+            </h2>
+            <p class="text-gray-600 mt-3">
+                Let’s build something amazing together.
+            </p>
+        </div>
 
-                    <button class="btn btn-primary w-100">
+        {{-- Success Message --}}
+        @if(session('success'))
+    <p class="mb-6 text-black font-medium">
+        {{ session('success') }}
+    </p>
+@endif
+
+        {{-- Form Card --}}
+        <div class="bg-white shadow-xl rounded-2xl p-10 border border-gray-200">
+
+            <form method="POST" action="{{ route('contact.store') }}" class="space-y-6">
+                @csrf
+
+                {{-- Name --}}
+                <div>
+                    <label class="block mb-2 font-medium text-black">
+                        Name
+                    </label>
+                    <input type="text" name="name" required
+                           class="w-full rounded-lg border border-gray-300 px-4 py-3
+                                  focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500
+                                  outline-none text-black">
+                </div>
+
+                {{-- Email --}}
+                <div>
+                    <label class="block mb-2 font-medium text-black">
+                        Email
+                    </label>
+                    <input type="email" name="email" required
+                           class="w-full rounded-lg border border-gray-300 px-4 py-3
+                                  focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500
+                                  outline-none text-black">
+                </div>
+
+                {{-- Message --}}
+                <div>
+                    <label class="block mb-2 font-medium text-black">
+                        Message
+                    </label>
+                    <textarea name="message" rows="6" required
+                              class="w-full rounded-lg border border-gray-300 px-4 py-3
+                                     focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500
+                                     outline-none text-black"></textarea>
+                </div>
+
+                {{-- Button --}}
+                <div>
+                    <button type="submit"
+                            class="px-8 py-3 bg-indigo-600 text-white font-semibold rounded-xl
+                                   shadow-md hover:bg-indigo-700 transition">
                         Send Message
                     </button>
-                </form>
-            </div>
+                </div>
+
+            </form>
+
         </div>
+
     </div>
-</div>
+
+</section>
+
 @endsection
-</body>
-</html>
