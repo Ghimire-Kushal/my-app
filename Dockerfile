@@ -26,9 +26,6 @@ RUN mkdir -p database \
     && chmod -R 777 storage \
     && chmod -R 777 bootstrap/cache
 
-# Generate app key (only if not set in Render)
-RUN php artisan key:generate --force
-
 # Run migrations automatically
 RUN php artisan migrate --force
 
