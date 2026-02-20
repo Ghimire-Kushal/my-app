@@ -13,14 +13,18 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
 
-# Copy project
+# Copy project files
 COPY . .
 
-# Install dependencies
-RUN composer install --no-dev --optimize-autoloader
+# Create SQLite database + fix permissions
+RUN mkdir -p database \
+    && touch database/database.sqlite \
+    && chmod -R 777 database \
+    && chmod -R 777 storage \
+    && chmod -R 777 bootstrap/cache
 
-# Create SQLite file
-RUN touch database/database.sqlite
+# Install Laravel dependencies
+RUN composer install --no-dev --optimize-autoloader
 
 # Expose port
 EXPOSE 10000
