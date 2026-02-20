@@ -16,6 +16,9 @@ WORKDIR /app
 # Copy project files
 COPY . .
 
+# Install Laravel dependencies
+RUN composer install --no-dev --optimize-autoloader
+
 # Create SQLite database + fix permissions
 RUN mkdir -p database \
     && touch database/database.sqlite \
@@ -23,8 +26,11 @@ RUN mkdir -p database \
     && chmod -R 777 storage \
     && chmod -R 777 bootstrap/cache
 
-# Install Laravel dependencies
-RUN composer install --no-dev --optimize-autoloader
+# Generate app key (only if not set in Render)
+RUN php artisan key:generate --force
+
+# Run migrations automatically
+RUN php artisan migrate --force
 
 # Expose port
 EXPOSE 10000
