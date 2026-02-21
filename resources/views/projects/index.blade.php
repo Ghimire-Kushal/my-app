@@ -25,7 +25,7 @@
 
                     {{-- Project Image --}}
                     @if ($project->image)
-                        <img src="{{ asset('storage/' . $project->image) }}"
+                    <img src="{{ asset($project->image) }}"
                              class="w-full h-56 object-cover group-hover:scale-105 transition duration-500">
                     @endif
 

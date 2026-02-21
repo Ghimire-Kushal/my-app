@@ -27,7 +27,7 @@
 
                 <!-- Image -->
                 <div class="overflow-hidden rounded-2xl shadow-lg">
-                    <img src="{{ asset('storage/' . $project->image) }}"
+                    <img src="{{ asset($project->image) }}"
                          alt="{{ $project->title }}"
                          class="w-full h-[400px] object-cover hover:scale-105 transition duration-500">
                 </div>
