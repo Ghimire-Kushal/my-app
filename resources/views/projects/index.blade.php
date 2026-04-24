@@ -24,10 +24,17 @@
                             transition duration-500 overflow-hidden">
 
                     {{-- Project Image --}}
-                    @if ($project->image)
-                    <img src="{{ asset($project->image) }}"
-                             class="w-full h-56 object-cover group-hover:scale-105 transition duration-500">
-                    @endif
+                    @if($project->image)
+    <img 
+        src="{{ asset('storage/' . $project->image) }}" 
+        alt="{{ $project->title }}"
+        class="w-full h-52 object-cover rounded-t-xl"
+    >
+@else
+    <div class="w-full h-52 bg-gray-200 flex items-center justify-center">
+        <span class="text-gray-400">No Image</span>
+    </div>
+@endif
 
                     <div class="p-6">
 

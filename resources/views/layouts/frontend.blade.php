@@ -20,6 +20,7 @@
 </head>
 
 <body class="bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-gray-100 transition-colors duration-300 antialiased">
+
 {{-- ================= NAVBAR ================= --}}
 <nav x-data="{ open: false }"
      class="fixed top-0 left-0 w-full z-50
@@ -30,76 +31,68 @@
 
     <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
 
-        {{-- LOGO --}}
+        <!-- LOGO -->
         <a href="{{ url('/') }}"
            class="text-xl font-bold text-indigo-600">
             Kushal.dev
         </a>
 
-        {{-- DESKTOP MENU --}}
+        <!-- DESKTOP MENU -->
         <div class="hidden md:flex items-center space-x-8 text-sm font-medium">
 
-    {{-- Home --}}
-    <a href="{{ url('/') }}"
-       class="{{ request()->is('/') 
-           ? 'text-indigo-600' 
-           : 'text-black hover:text-indigo-600' }}">
-        Home
-    </a>
+            <!-- Home -->
+            <a href="{{ url('/') }}"
+               class="{{ request()->is('/') 
+                   ? 'text-indigo-600' 
+                   : 'text-black hover:text-indigo-600' }}">
+                Home
+            </a>
 
-    {{-- Projects --}}
-    <a href="{{ url('/#projects') }}"
-       class="{{ request()->is('/') && request()->getRequestUri() === '/#projects'
-           ? 'text-indigo-600'
-           : 'text-black hover:text-indigo-600' }}">
-        Projects
-    </a>
+            <!-- Projects -->
+            <a href="{{ url('/#projects') }}"
+               class="text-black hover:text-indigo-600">
+                Projects
+            </a>
 
-    {{-- Contact --}}
-    <a href="{{ url('/contact') }}"
-       class="{{ request()->is('contact') 
-           ? 'text-indigo-600' 
-           : 'text-black hover:text-indigo-600' }}">
-        Contact
-    </a>
+            <!-- Contact -->
+            <a href="{{ url('/contact') }}"
+               class="{{ request()->is('contact') 
+                   ? 'text-indigo-600' 
+                   : 'text-black hover:text-indigo-600' }}">
+                Contact
+            </a>
 
-    @auth
-        <a href="{{ url('/admin') }}"
-           class="{{ request()->is('admin*') 
-               ? 'text-indigo-600 font-semibold' 
-               : 'text-black hover:text-indigo-600' }}">
-            Dashboard
-        </a>
+            <!-- ADMIN ONLY -->
+            @auth
+                <a href="{{ url('/admin') }}"
+                   class="{{ request()->is('admin*') 
+                       ? 'text-indigo-600 font-semibold' 
+                       : 'text-black hover:text-indigo-600' }}">
+                    Dashboard
+                </a>
 
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <button class="text-red-500 hover:text-red-700 transition">
-                Logout
-            </button>
-        </form>
-    @else
-        <a href="{{ url('/login') }}"
-           class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition shadow-sm">
-            Login
-        </a>
-    @endauth
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button class="text-red-500 hover:text-red-700 transition">
+                        Logout
+                    </button>
+                </form>
+            @endauth
 
-</div>
+        </div>
 
-        {{-- MOBILE BUTTON --}}
+        <!-- MOBILE BUTTON -->
         <button @click="open = !open"
                 class="md:hidden text-gray-700 dark:text-gray-300 focus:outline-none">
 
-            <svg x-show="!open" xmlns="http://www.w3.org/2000/svg"
-                 class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+            <svg x-show="!open" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                  stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round"
                       stroke-width="2"
                       d="M4 6h16M4 12h16M4 18h16"/>
             </svg>
 
-            <svg x-show="open" xmlns="http://www.w3.org/2000/svg"
-                 class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+            <svg x-show="open" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                  stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round"
                       stroke-width="2"
@@ -109,7 +102,7 @@
         </button>
     </div>
 
-    {{-- MOBILE MENU --}}
+    <!-- MOBILE MENU -->
     <div x-show="open"
          x-transition
          class="md:hidden bg-white dark:bg-gray-900
@@ -132,6 +125,7 @@
                 Contact
             </a>
 
+            <!-- ADMIN ONLY -->
             @auth
                 <a href="{{ url('/admin') }}" @click="open=false"
                    class="block text-indigo-600 font-semibold">
@@ -144,13 +138,8 @@
                         Logout
                     </button>
                 </form>
-            @else
-                <a href="{{ url('/login') }}"
-                   class="block bg-indigo-600 text-white px-4 py-2
-                          rounded-lg text-center hover:bg-indigo-700 transition">
-                    Login
-                </a>
             @endauth
+
         </div>
     </div>
 

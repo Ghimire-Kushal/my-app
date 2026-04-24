@@ -8,9 +8,9 @@
 <div class="max-w-6xl mx-auto">
 
     <!-- Back -->
-   <a href="{{ route('dashboard') }}" 
+   <a href="{{ route('projects.index') }}"
    class="text-indigo-600 hover:text-indigo-800 text-sm mb-8 inline-block">
-    ← Back to Dashboard
+    ← Back to Projects
 </a>
     <!-- Title Section -->
     <div class="text-center mb-16">
