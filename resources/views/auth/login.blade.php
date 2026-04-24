@@ -61,14 +61,9 @@
             @endif
         </div>
 
-        {{-- Register Link + Button --}}
-        <div class="flex items-center justify-between mt-6">
-            <a class="underline text-sm text-gray-600 hover:text-gray-900"
-               href="{{ route('register') }}">
-                {{ __("Don't have an account?") }}
-            </a>
-
-            <x-primary-button>
+        {{-- Login Button ONLY --}}
+        <div class="mt-6">
+            <x-primary-button class="w-full justify-center">
                 {{ __('Log in') }}
             </x-primary-button>
         </div>
