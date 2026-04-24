@@ -3,14 +3,16 @@ import forms from '@tailwindcss/forms';
 
 /** @type {import('tailwindcss').Config} */
 export default {
-
-    // ✅ ADD THIS LINE
     darkMode: 'class',
 
     content: [
+        './resources/views/**/*.blade.php',
+        './resources/js/**/*.js',
+        './resources/js/**/*.vue',
+
+        // optional (keep if using pagination)
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './storage/framework/views/*.php',
-        './resources/views/**/*.blade.php',
     ],
 
     theme: {
@@ -21,5 +23,7 @@ export default {
         },
     },
 
-    plugins: [forms],
+    plugins: [
+        forms,
+    ],
 };

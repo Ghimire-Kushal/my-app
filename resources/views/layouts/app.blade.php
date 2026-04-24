@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <!-- Meta -->
     <meta charset="utf-8">
@@ -13,7 +14,7 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-    <!-- Styles & Scripts -->
+    <!-- Vite Assets -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
@@ -23,10 +24,8 @@
 
         <!-- Navigation -->
         @auth
-            {{-- Admin Navbar --}}
             @include('layouts.navigation')
         @else
-            {{-- Public Navbar --}}
             @include('layouts.frontend')
         @endauth
 
@@ -35,7 +34,7 @@
             @yield('content')
         </main>
 
-        <!-- Footer (optional) -->
+        <!-- Footer -->
         <footer class="text-center text-sm text-gray-500 py-4">
             © {{ date('Y') }} Kushal.dev. All rights reserved.
         </footer>
