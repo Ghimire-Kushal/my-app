@@ -36,10 +36,17 @@ RUN npm install && npm run build
 # Set Apache document root to public
 RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
 
-# Fix permissions (runtime safe)
-RUN mkdir -p storage/logs bootstrap/cache && \
-    chown -R www-data:www-data storage bootstrap/cache && \
-    chmod -R 775 storage bootstrap/cache
+# ✅ CREATE REQUIRED LARAVEL DIRECTORIES (IMPORTANT)
+RUN mkdir -p \
+    storage/logs \
+    storage/framework/cache \
+    storage/framework/sessions \
+    storage/framework/views \
+    bootstrap/cache
+
+# ✅ FIX PERMISSIONS (BUILD TIME)
+RUN chown -R www-data:www-data storage bootstrap/cache && \
+    chmod -R 777 storage bootstrap/cache
 
 # Apache must listen on Render port
 RUN sed -i 's/80/10000/g' /etc/apache2/ports.conf /etc/apache2/sites-available/000-default.conf
@@ -47,11 +54,11 @@ RUN sed -i 's/80/10000/g' /etc/apache2/ports.conf /etc/apache2/sites-available/0
 # Expose port
 EXPOSE 10000
 
-# Start command (clean + stable)
-CMD chown -R www-data:www-data storage bootstrap/cache && \
-    chmod -R 775 storage bootstrap/cache && \
+# ✅ START COMMAND (RUNTIME)
+CMD chmod -R 777 storage bootstrap/cache && \
+    chown -R www-data:www-data storage bootstrap/cache && \
     php artisan config:clear && \
     php artisan cache:clear && \
     php artisan config:cache && \
-    php artisan migrate --force || true && \
+    php artisan migrate:fresh --force && \
     apache2-foreground
