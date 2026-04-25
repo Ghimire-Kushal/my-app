@@ -29,26 +29,26 @@ return [
         ],
 
         'pgsql' => [
-            'driver' => 'pgsql',
+    'driver' => 'pgsql',
 
-            // ✅ THIS IS THE IMPORTANT LINE
-            'url' => env('DATABASE_URL'),
+    // ✅ Use ONLY this (Render way)
+    'url' => env('DATABASE_URL'),
 
-            'host' => env('DB_HOST'),
-            'port' => env('DB_PORT', '5432'),
-            'database' => env('DB_DATABASE'),
-            'username' => env('DB_USERNAME'),
-            'password' => env('DB_PASSWORD'),
+    // ❌ Remove dependency on DB_* variables
+    'host' => null,
+    'port' => null,
+    'database' => null,
+    'username' => null,
+    'password' => null,
 
-            'charset' => 'utf8',
-            'prefix' => '',
-            'prefix_indexes' => true,
-            'search_path' => 'public',
+    'charset' => 'utf8',
+    'prefix' => '',
+    'prefix_indexes' => true,
+    'search_path' => 'public',
 
-            // ✅ Required for Render Postgres
-            'sslmode' => 'require',
-        ],
-
+    // ✅ Required for Render PostgreSQL
+    'sslmode' => 'require',
+],
     ],
 
     /*
