@@ -51,6 +51,10 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+Route::get('/fix-db', function () {
+    \Artisan::call('migrate:fresh --force');
+    return 'Database fixed!';
+});
 
 
 /*
