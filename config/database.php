@@ -29,13 +29,13 @@ return [
         ],
 
         
-        'pgsql' => [
+      'pgsql' => [
     'driver' => 'pgsql',
 
-    // ✅ Primary connection (Render)
+    // ✅ Primary (Render)
     'url' => env('DATABASE_URL'),
 
-    // ✅ Keep fallback values (DO NOT NULL THESE)
+    // ✅ Fallbacks (important for stability)
     'host' => env('DB_HOST', '127.0.0.1'),
     'port' => env('DB_PORT', '5432'),
     'database' => env('DB_DATABASE', 'forge'),
@@ -47,7 +47,7 @@ return [
     'prefix_indexes' => true,
     'search_path' => 'public',
 
-    // ✅ Required for Render PostgreSQL
+    // ✅ Required for Render
     'sslmode' => 'require',
 ],
     ],

@@ -33,26 +33,26 @@ RUN composer install --no-dev --optimize-autoloader
 # Build frontend
 RUN npm install && npm run build
 
-# ✅ Set Apache document root to public
+# Set Apache document root to public
 RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
 
-# ✅ FIX PERMISSIONS (VERY IMPORTANT)
-RUN mkdir -p storage/logs && \
+# Fix permissions (runtime safe)
+RUN mkdir -p storage/logs bootstrap/cache && \
     chown -R www-data:www-data storage bootstrap/cache && \
     chmod -R 775 storage bootstrap/cache
 
-# ✅ Apache must listen on 10000 (Render requirement)
+# Apache must listen on Render port
 RUN sed -i 's/80/10000/g' /etc/apache2/ports.conf /etc/apache2/sites-available/000-default.conf
 
-# Expose correct port
+# Expose port
 EXPOSE 10000
 
-# 🚀 Clean startup
-CMD rm -rf bootstrap/cache/* && \
+# Start command (clean + stable)
+CMD rm -rf bootstrap/cache/* storage/framework/* && \
+    chown -R www-data:www-data storage bootstrap/cache && \
+    chmod -R 775 storage bootstrap/cache && \
     php artisan config:clear && \
     php artisan cache:clear && \
     php artisan config:cache && \
-    php artisan route:clear && \
-    php artisan view:clear && \
     php artisan migrate --force || true && \
     apache2-foreground
