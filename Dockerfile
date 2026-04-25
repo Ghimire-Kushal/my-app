@@ -7,9 +7,11 @@ RUN apt-get update && apt-get install -y \
     unzip \
     libpq-dev \
     gnupg \
-    && docker-php-ext-install pdo pdo_pgsql
+    libzip-dev \
+    zip \
+    && docker-php-ext-install pdo pdo_pgsql zip
 
-# Install Node.js 18
+# Install Node.js
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
     && apt-get install -y nodejs
 
@@ -25,21 +27,20 @@ COPY . .
 RUN composer install --no-dev --optimize-autoloader
 
 # Build frontend
-RUN npm install
-RUN npm run build
+RUN npm install && npm run build
 
-# Fix permissions
+# Permissions
 RUN chmod -R 775 storage bootstrap/cache
 
-# Expose port
+# Expose Render port
 EXPOSE 10000
 
-# 🚀 Proper startup (NO error hiding)
-CMD sleep 10 && \
+# 🚀 PRODUCTION SAFE START
+CMD echo "Starting app..." && \
+    rm -rf bootstrap/cache/* && \
     php artisan config:clear && \
     php artisan cache:clear && \
     php artisan config:cache && \
-    php artisan route:cache && \
-    php artisan view:cache && \
-    php artisan migrate --force && \
-    php artisan serve --host=0.0.0.0 --port=10000
+    sleep 5 && \
+    php artisan migrate --force || true && \
+    php -S 0.0.0.0:10000 -t public

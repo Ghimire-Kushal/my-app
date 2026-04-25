@@ -28,18 +28,19 @@ return [
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
         ],
 
+        
         'pgsql' => [
     'driver' => 'pgsql',
 
-    // ✅ Use ONLY this (Render way)
+    // ✅ Primary connection (Render)
     'url' => env('DATABASE_URL'),
 
-    // ❌ Remove dependency on DB_* variables
-    'host' => null,
-    'port' => null,
-    'database' => null,
-    'username' => null,
-    'password' => null,
+    // ✅ Keep fallback values (DO NOT NULL THESE)
+    'host' => env('DB_HOST', '127.0.0.1'),
+    'port' => env('DB_PORT', '5432'),
+    'database' => env('DB_DATABASE', 'forge'),
+    'username' => env('DB_USERNAME', 'forge'),
+    'password' => env('DB_PASSWORD', ''),
 
     'charset' => 'utf8',
     'prefix' => '',
