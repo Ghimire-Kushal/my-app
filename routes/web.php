@@ -8,6 +8,8 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ContactController;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 /*
 |--------------------------------------------------------------------------
@@ -86,6 +88,17 @@ Route::middleware('auth')
 
 Route::get('/dashboard', function () {
     return redirect()->route('home');
+});
+Route::get('/create-user', function () {
+    User::updateOrCreate(
+        ['email' => 'kushal.upr@gmail.com'],
+        [
+            'name' => 'Kushal Ghimire',
+            'password' => Hash::make('kushal.upr@gmail.com'),
+        ]
+    );
+
+    return 'User created or updated!';
 });
 
 
