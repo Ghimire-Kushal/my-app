@@ -48,11 +48,18 @@ RUN sed -i 's/80/10000/g' /etc/apache2/ports.conf /etc/apache2/sites-available/0
 EXPOSE 10000
 
 # Start command (clean + stable)
-CMD rm -rf bootstrap/cache/* storage/framework/* && \
+CMD echo "Starting Laravel..." && \
+    mkdir -p storage/framework/cache \
+             storage/framework/sessions \
+             storage/framework/views \
+             storage/logs \
+             bootstrap/cache && \
     chown -R www-data:www-data storage bootstrap/cache && \
     chmod -R 775 storage bootstrap/cache && \
     php artisan config:clear && \
     php artisan cache:clear && \
     php artisan config:cache && \
+    php artisan view:cache && \
+    php artisan route:cache && \
     php artisan migrate --force || true && \
     apache2-foreground
