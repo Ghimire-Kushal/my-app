@@ -1,15 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Mail;
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ContactController;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,7 +50,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
 });
 
 
@@ -71,10 +67,10 @@ Route::middleware('auth')
         // Dashboard
         Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
 
-        // Admin Projects List
+        // Admin Projects
         Route::get('/projects', [ProjectController::class, 'adminIndex'])->name('projects.index');
 
-        // CRUD (create, edit, delete)
+        // CRUD
         Route::resource('projects', ProjectController::class)
             ->except(['index', 'show']);
     });
@@ -82,24 +78,19 @@ Route::middleware('auth')
 
 /*
 |--------------------------------------------------------------------------
-| Optional: Disable public /dashboard
+| Redirect /dashboard (public)
 |--------------------------------------------------------------------------
 */
 
 Route::get('/dashboard', function () {
     return redirect()->route('home');
 });
-Route::get('/create-user', function () {
-    User::updateOrCreate(
-        ['email' => 'kushal.upr@gmail.com'],
-        [
-            'name' => 'Kushal Ghimire',
-            'password' => Hash::make('kushal.upr@gmail.com'),
-        ]
-    );
 
-    return 'User created or updated!';
-});
 
+/*
+|--------------------------------------------------------------------------
+| Auth Routes (Laravel Breeze / UI)
+|--------------------------------------------------------------------------
+*/
 
 require __DIR__.'/auth.php';
