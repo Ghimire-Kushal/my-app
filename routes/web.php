@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProjectController;
@@ -26,7 +27,6 @@ Route::post('/contact', [ContactController::class, 'store'])
 
 // Projects
 Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
-
 Route::get('/projects/{project:slug}', [ProjectController::class, 'show'])->name('projects.show');
 
 // Resume Download
@@ -50,10 +50,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-Route::get('/fix-db', function () {
-    \Artisan::call('migrate:fresh --force');
-    return 'Database fixed!';
+
 });
 
 
@@ -82,7 +79,7 @@ Route::middleware('auth')
 
 /*
 |--------------------------------------------------------------------------
-| Redirect /dashboard (public)
+| Redirect public /dashboard
 |--------------------------------------------------------------------------
 */
 
@@ -93,7 +90,19 @@ Route::get('/dashboard', function () {
 
 /*
 |--------------------------------------------------------------------------
-| Auth Routes (Laravel Breeze / UI)
+| TEMP: Fix DB Route (REMOVE AFTER USE)
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/fix-db', function () {
+    Artisan::call('migrate:fresh --seed --force');
+    return 'Database fixed!';
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| Auth Routes (IMPORTANT)
 |--------------------------------------------------------------------------
 */
 
