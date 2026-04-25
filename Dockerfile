@@ -31,4 +31,5 @@ RUN npm run build
 EXPOSE 10000
 
 # Start app (with delay for DB)
-CMD sleep 10 && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=10000
+# CMD sleep 10 && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=10000
+CMD php artisan config:clear && php artisan cache:clear && php artisan migrate --force && php artisan db:seed --force && php artisan serve --host=0.0.0.0 --port=10000
