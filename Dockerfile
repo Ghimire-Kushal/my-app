@@ -58,7 +58,6 @@ EXPOSE 10000
 CMD chmod -R 777 storage bootstrap/cache && \
     chown -R www-data:www-data storage bootstrap/cache && \
     php artisan config:clear && \
-    php artisan cache:clear && \
     php artisan config:cache && \
-    php artisan migrate:fresh --force && \
+    php artisan migrate --force && \
     apache2-foreground
