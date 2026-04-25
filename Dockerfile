@@ -1,4 +1,4 @@
-FROM php:8.4-cli
+FROM php:8.4-apache
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -6,10 +6,13 @@ RUN apt-get update && apt-get install -y \
     curl \
     unzip \
     libpq-dev \
-    gnupg \
     libzip-dev \
     zip \
+    gnupg \
     && docker-php-ext-install pdo pdo_pgsql zip
+
+# Enable Apache rewrite
+RUN a2enmod rewrite
 
 # Install Node.js
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
@@ -18,7 +21,8 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-WORKDIR /var/www
+# Set working directory
+WORKDIR /var/www/html
 
 # Copy project
 COPY . .
@@ -29,18 +33,19 @@ RUN composer install --no-dev --optimize-autoloader
 # Build frontend
 RUN npm install && npm run build
 
-# Permissions
-RUN chmod -R 775 storage bootstrap/cache
+# Set correct Apache root
+RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
 
-# Expose Render port
+# Permissions (important)
+RUN chmod -R 777 storage bootstrap/cache
+
+# Expose port
 EXPOSE 10000
 
-# 🚀 PRODUCTION SAFE START
-CMD echo "Starting app..." && \
-    rm -rf bootstrap/cache/* && \
+# Start script
+CMD rm -rf bootstrap/cache/* && \
     php artisan config:clear && \
     php artisan cache:clear && \
     php artisan config:cache && \
-    sleep 5 && \
     php artisan migrate --force || true && \
-    php -S 0.0.0.0:10000 -t public
+    apache2-foreground
