@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -22,7 +23,7 @@ class RegisteredUserController extends Controller
     }
 
     /**
-     * Handle registration (NO auto login)
+     * Handle registration (AUTO LOGIN + REDIRECT)
      */
     public function store(Request $request): RedirectResponse
     {
@@ -40,10 +41,10 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        // ❌ Removed: Auth::login($user);
+        // ✅ AUTO LOGIN (FIXED)
+        Auth::login($user);
 
-        return redirect()
-            ->route('login')
-            ->with('success', 'Account created successfully. Please login.');
+        // ✅ REDIRECT TO ADMIN DASHBOARD
+        return redirect('/admin/dashboard');
     }
 }

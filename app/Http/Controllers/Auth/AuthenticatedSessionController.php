@@ -27,11 +27,11 @@ class AuthenticatedSessionController extends Controller
         // Authenticate user
         $request->authenticate();
 
-        // Regenerate session (security best practice)
+        // Regenerate session (important)
         $request->session()->regenerate();
 
-        // Redirect to Admin Dashboard
-        return redirect()->intended('/admin/projects');
+        // ✅ Redirect to ADMIN DASHBOARD (clean + consistent)
+        return redirect()->intended('/admin/dashboard');
     }
 
     /**
