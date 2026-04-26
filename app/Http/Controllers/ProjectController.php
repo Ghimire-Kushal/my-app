@@ -116,7 +116,7 @@ class ProjectController extends Controller
 
     public function destroy(Project $project)
     {
-        // ❌ DO NOT delete from local storage anymore
+        // ❌ DO NOT delete from local storage anymoree
 
         $project->delete();
 
