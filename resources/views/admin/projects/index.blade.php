@@ -37,19 +37,22 @@
                     <div class="group bg-white rounded-2xl shadow-sm hover:shadow-xl
                                 transition duration-300 overflow-hidden border border-gray-100">
 
-                        {{-- IMAGE --}}
+                        {{-- ================= IMAGE ================= --}}
                         <div class="overflow-hidden relative">
 
-                            @if($project->image)
-                                <img src="{{ asset('storage/'.$project->image) }}"
-                                     class="w-full h-56 object-cover group-hover:scale-110 transition duration-500">
+                            @if(!empty($project->image))
+                                <img 
+                                    src="{{ $project->image }}" 
+                                    alt="{{ $project->title }}"
+                                    class="w-full h-56 object-cover group-hover:scale-110 transition duration-500"
+                                >
                             @else
                                 <div class="w-full h-56 bg-gray-100 flex items-center justify-center text-gray-400">
                                     No Image
                                 </div>
                             @endif
 
-                            {{-- Overlay Actions --}}
+                            {{-- ================= OVERLAY ================= --}}
                             <div class="absolute inset-0 bg-black/40 opacity-0
                                         group-hover:opacity-100 transition duration-300
                                         flex items-center justify-center gap-4">
@@ -74,7 +77,7 @@
                             </div>
                         </div>
 
-                        {{-- CONTENT --}}
+                        {{-- ================= CONTENT ================= --}}
                         <div class="p-6">
 
                             <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-indigo-600 transition">
@@ -93,7 +96,7 @@
 
             </div>
 
-            {{-- Pagination --}}
+            {{-- ================= PAGINATION ================= --}}
             <div class="mt-12">
                 {{ $projects->links() }}
             </div>
