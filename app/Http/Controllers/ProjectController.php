@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Cloudinary\Api\Upload\UploadApi; // ✅ IMPORTANT
+use Cloudinary\Api\Upload\UploadApi;
 
 class ProjectController extends Controller
 {
@@ -48,27 +48,25 @@ class ProjectController extends Controller
             'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
-        // ✅ Generate slug
+        // ✅ Slug
         $slug = Str::slug($validated['title']);
         if (Project::where('slug', $slug)->exists()) {
             $slug .= '-' . time();
         }
-
         $validated['slug'] = $slug;
 
-        // ✅ Upload to Cloudinary (FIXED)
+        // ✅ Upload to Cloudinary
         if ($request->hasFile('image')) {
+            try {
+                $upload = (new UploadApi())->upload(
+                    $request->file('image')->getRealPath()
+                );
 
-            $upload = (new UploadApi())->upload(
-                $request->file('image')->getRealPath(),
-                [
-                    'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
-                    'api_key'    => env('CLOUDINARY_API_KEY'),
-                    'api_secret' => env('CLOUDINARY_API_SECRET'),
-                ]
-            );
-
-            $validated['image'] = $upload['secure_url'];
+                $validated['image'] = $upload['secure_url']; // FULL URL
+            } catch (\Exception $e) {
+                // Optional debug (remove in production)
+                return back()->with('error', 'Image upload failed: ' . $e->getMessage());
+            }
         }
 
         Project::create($validated);
@@ -91,32 +89,28 @@ class ProjectController extends Controller
             'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
-        // ✅ Update slug if title changed
+        // ✅ Slug update
         if ($project->title !== $validated['title']) {
             $slug = Str::slug($validated['title']);
-
             if (Project::where('slug', $slug)
                 ->where('id', '!=', $project->id)
                 ->exists()) {
                 $slug .= '-' . time();
             }
-
             $validated['slug'] = $slug;
         }
 
-        // ✅ Upload new image (FIXED)
+        // ✅ Upload new image
         if ($request->hasFile('image')) {
+            try {
+                $upload = (new UploadApi())->upload(
+                    $request->file('image')->getRealPath()
+                );
 
-            $upload = (new UploadApi())->upload(
-                $request->file('image')->getRealPath(),
-                [
-                    'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
-                    'api_key'    => env('CLOUDINARY_API_KEY'),
-                    'api_secret' => env('CLOUDINARY_API_SECRET'),
-                ]
-            );
-
-            $validated['image'] = $upload['secure_url'];
+                $validated['image'] = $upload['secure_url'];
+            } catch (\Exception $e) {
+                return back()->with('error', 'Image upload failed: ' . $e->getMessage());
+            }
         }
 
         $project->update($validated);

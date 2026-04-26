@@ -24,17 +24,23 @@
                             transition duration-500 overflow-hidden">
 
                     {{-- Project Image --}}
-                    @if($project->image)
-    <img 
-        src="{{ $project->image }}" 
-        alt="{{ $project->title }}"
-        class="w-full h-52 object-cover rounded-t-xl"
-    >
-@else
-    <div class="w-full h-52 bg-gray-200 flex items-center justify-center">
-        <span class="text-gray-400">No Image</span>
-    </div>
-@endif
+                    @if(!empty($project->image))
+                        <img 
+                            src="{{ $project->image }}" 
+                            alt="{{ $project->title }}"
+                            class="w-full h-52 object-cover rounded-t-xl"
+                            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                        >
+
+                        {{-- Fallback if image fails --}}
+                        <div class="w-full h-52 bg-gray-200 hidden items-center justify-center">
+                            <span class="text-gray-400">Image not available</span>
+                        </div>
+                    @else
+                        <div class="w-full h-52 bg-gray-200 flex items-center justify-center">
+                            <span class="text-gray-400">No Image</span>
+                        </div>
+                    @endif
 
                     <div class="p-6">
 
@@ -49,7 +55,7 @@
                         </p>
 
                         {{-- Button --}}
-                        <a href="#"
+                        <a href="{{ route('projects.show', $project->slug) }}"
                            class="inline-block mt-6 text-indigo-600 font-medium group-hover:underline">
                             View Details →
                         </a>
@@ -58,12 +64,20 @@
                 </div>
 
             @empty
-                <div class="col-span-full text-center text-gray-500">
+                <div class="col-span-full text-center text-gray-500 text-lg">
                     No projects available yet.
                 </div>
             @endforelse
 
         </div>
+
+        {{-- Pagination --}}
+        @if(method_exists($projects, 'links'))
+            <div class="mt-16 flex justify-center">
+                {{ $projects->links() }}
+            </div>
+        @endif
+
     </div>
 </section>
 
