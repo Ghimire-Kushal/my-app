@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use Cloudinary\Api\Upload\UploadApi; // ✅ IMPORTANT
 
 class ProjectController extends Controller
 {
@@ -56,13 +56,19 @@ class ProjectController extends Controller
 
         $validated['slug'] = $slug;
 
-        // ✅ Upload to Cloudinary (NOT local storage)
+        // ✅ Upload to Cloudinary (FIXED)
         if ($request->hasFile('image')) {
-            $uploaded = Cloudinary::upload(
-                $request->file('image')->getRealPath()
+
+            $upload = (new UploadApi())->upload(
+                $request->file('image')->getRealPath(),
+                [
+                    'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+                    'api_key'    => env('CLOUDINARY_API_KEY'),
+                    'api_secret' => env('CLOUDINARY_API_SECRET'),
+                ]
             );
 
-            $validated['image'] = $uploaded->getSecurePath(); // FULL URL
+            $validated['image'] = $upload['secure_url'];
         }
 
         Project::create($validated);
@@ -85,7 +91,7 @@ class ProjectController extends Controller
             'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
-        // ✅ Update slug if changed
+        // ✅ Update slug if title changed
         if ($project->title !== $validated['title']) {
             $slug = Str::slug($validated['title']);
 
@@ -98,13 +104,19 @@ class ProjectController extends Controller
             $validated['slug'] = $slug;
         }
 
-        // ✅ Upload new image (Cloudinary)
+        // ✅ Upload new image (FIXED)
         if ($request->hasFile('image')) {
-            $uploaded = Cloudinary::upload(
-                $request->file('image')->getRealPath()
+
+            $upload = (new UploadApi())->upload(
+                $request->file('image')->getRealPath(),
+                [
+                    'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+                    'api_key'    => env('CLOUDINARY_API_KEY'),
+                    'api_secret' => env('CLOUDINARY_API_SECRET'),
+                ]
             );
 
-            $validated['image'] = $uploaded->getSecurePath();
+            $validated['image'] = $upload['secure_url'];
         }
 
         $project->update($validated);
@@ -116,8 +128,6 @@ class ProjectController extends Controller
 
     public function destroy(Project $project)
     {
-        // ❌ DO NOT delete from local storage anymoree
-
         $project->delete();
 
         return redirect()
