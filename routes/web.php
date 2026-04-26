@@ -60,6 +60,9 @@ Route::middleware('auth')->group(function () {
 |--------------------------------------------------------------------------
 */
 
+Route::get('/admin', function () {
+    return redirect()->route('admin.dashboard');
+});
 Route::middleware('auth')
     ->prefix('admin')
     ->name('admin.')
