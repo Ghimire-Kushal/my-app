@@ -25,28 +25,26 @@ Route::post('/contact', [ContactController::class, 'store'])
     ->name('contact.store')
     ->middleware('throttle:3,1');
 
-// Projects
+// Projects (USE SLUG)
 Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
 Route::get('/projects/{project:slug}', [ProjectController::class, 'show'])->name('projects.show');
 
-// Resume Download
+// Resume
 Route::get('/download-resume', function () {
     $path = public_path('resume.pdf');
     abort_if(!file_exists($path), 404);
-
     return response()->download($path, 'Kushal-Ghimire-Resume.pdf');
 })->name('resume.download');
 
 
 /*
 |--------------------------------------------------------------------------
-| Authenticated Routes
+| Auth Routes
 |--------------------------------------------------------------------------
 */
 
 Route::middleware('auth')->group(function () {
 
-    // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -56,44 +54,45 @@ Route::middleware('auth')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| Admin Routes (Protected)
+| Admin Routes (USE ID)
 |--------------------------------------------------------------------------
 */
 
-Route::get('/admin', function () {
-    return redirect()->route('admin.dashboard');
-});
 Route::middleware('auth')
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
 
-        // Dashboard
         Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
 
-        // Admin Projects
+        // List
         Route::get('/projects', [ProjectController::class, 'adminIndex'])->name('projects.index');
 
-        // CRUD
-        Route::resource('projects', ProjectController::class)
-            ->except(['index', 'show']);
+        // Create
+        Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
+        Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
+
+        // Edit (ID)
+        Route::get('/projects/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
+        Route::put('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
+
+        // Delete
+        Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
     });
 
 
 /*
 |--------------------------------------------------------------------------
-| Redirect public /dashboard
+| Redirect dashboard
 |--------------------------------------------------------------------------
 */
 
-Route::get('/dashboard', function () {
-    return redirect()->route('home');
-});
+Route::get('/dashboard', fn () => redirect()->route('home'));
 
 
 /*
 |--------------------------------------------------------------------------
-| TEMP: Fix DB Route (REMOVE AFTER USE)
+| TEMP DB FIX (optional)
 |--------------------------------------------------------------------------
 */
 
@@ -102,11 +101,5 @@ Route::get('/fix-db', function () {
     return 'Database fixed!';
 });
 
-
-/*
-|--------------------------------------------------------------------------
-| Auth Routes (IMPORTANT)
-|--------------------------------------------------------------------------
-*/
 
 require __DIR__.'/auth.php';

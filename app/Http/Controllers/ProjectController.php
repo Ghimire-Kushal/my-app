@@ -9,7 +9,7 @@ use Cloudinary\Api\Upload\UploadApi;
 
 class ProjectController extends Controller
 {
-    /* ================= FRONTEND ================= */
+    /* FRONTEND */
 
     public function index()
     {
@@ -27,7 +27,7 @@ class ProjectController extends Controller
         return view('projects.show', compact('project', 'relatedProjects'));
     }
 
-    /* ================= ADMIN ================= */
+    /* ADMIN */
 
     public function adminIndex()
     {
@@ -43,37 +43,31 @@ class ProjectController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title'       => 'required|string|max:255|unique:projects,title',
+            'title' => 'required|string|max:255|unique:projects,title',
             'description' => 'required|string',
-            'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'image' => 'nullable|image|max:2048',
         ]);
 
-        // ✅ Slug
+        // slug
         $slug = Str::slug($validated['title']);
         if (Project::where('slug', $slug)->exists()) {
             $slug .= '-' . time();
         }
         $validated['slug'] = $slug;
 
-        // ✅ Upload to Cloudinary
+        // upload
         if ($request->hasFile('image')) {
-            try {
-                $upload = (new UploadApi())->upload(
-                    $request->file('image')->getRealPath()
-                );
+            $upload = (new UploadApi())->upload(
+                $request->file('image')->getRealPath()
+            );
 
-                $validated['image'] = $upload['secure_url']; // FULL URL
-            } catch (\Exception $e) {
-                // Optional debug (remove in production)
-                return back()->with('error', 'Image upload failed: ' . $e->getMessage());
-            }
+            $validated['image'] = $upload['secure_url'];
         }
 
         Project::create($validated);
 
-        return redirect()
-            ->route('admin.projects.index')
-            ->with('success', 'Project created successfully!');
+        return redirect()->route('admin.projects.index')
+            ->with('success', 'Project created!');
     }
 
     public function edit(Project $project)
@@ -84,48 +78,40 @@ class ProjectController extends Controller
     public function update(Request $request, Project $project)
     {
         $validated = $request->validate([
-            'title'       => 'required|string|max:255|unique:projects,title,' . $project->id,
+            'title' => 'required|string|max:255|unique:projects,title,' . $project->id,
             'description' => 'required|string',
-            'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'image' => 'nullable|image|max:2048',
         ]);
 
-        // ✅ Slug update
+        // slug update
         if ($project->title !== $validated['title']) {
             $slug = Str::slug($validated['title']);
-            if (Project::where('slug', $slug)
-                ->where('id', '!=', $project->id)
-                ->exists()) {
+            if (Project::where('slug', $slug)->where('id', '!=', $project->id)->exists()) {
                 $slug .= '-' . time();
             }
             $validated['slug'] = $slug;
         }
 
-        // ✅ Upload new image
+        // image update
         if ($request->hasFile('image')) {
-            try {
-                $upload = (new UploadApi())->upload(
-                    $request->file('image')->getRealPath()
-                );
+            $upload = (new UploadApi())->upload(
+                $request->file('image')->getRealPath()
+            );
 
-                $validated['image'] = $upload['secure_url'];
-            } catch (\Exception $e) {
-                return back()->with('error', 'Image upload failed: ' . $e->getMessage());
-            }
+            $validated['image'] = $upload['secure_url'];
         }
 
         $project->update($validated);
 
-        return redirect()
-            ->route('admin.projects.index')
-            ->with('success', 'Project updated successfully!');
+        return redirect()->route('admin.projects.index')
+            ->with('success', 'Project updated!');
     }
 
     public function destroy(Project $project)
     {
         $project->delete();
 
-        return redirect()
-            ->route('admin.projects.index')
-            ->with('success', 'Project deleted successfully!');
+        return redirect()->route('admin.projects.index')
+            ->with('success', 'Project deleted!');
     }
 }
