@@ -55,9 +55,6 @@ RUN sed -i 's/80/10000/g' /etc/apache2/ports.conf /etc/apache2/sites-available/0
 EXPOSE 10000
 
 # ✅ START COMMAND (RUNTIME)
-CMD chmod -R 777 storage bootstrap/cache && \
-    chown -R www-data:www-data storage bootstrap/cache && \
-    php artisan config:clear && \
-    php artisan config:cache && \
-    (php artisan migrate --force || echo "Migration skipped") && \
+CMD php artisan storage:link || true && \
+    php artisan migrate --force || true && \
     apache2-foreground
