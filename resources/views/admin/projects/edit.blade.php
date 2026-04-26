@@ -11,10 +11,40 @@
                 Edit Project
             </h2>
 
+            <!-- ✅ IMPORTANT: enctype added -->
             <form action="{{ route('admin.projects.update', $project->id) }}" 
-                  method="POST">
+                  method="POST"
+                  enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
+
+                <!-- ✅ CURRENT IMAGE -->
+                @if($project->image)
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Current Image
+                        </label>
+                        <img 
+                            src="{{ asset('storage/' . $project->image) }}" 
+                            class="w-full h-48 object-cover rounded-lg shadow"
+                        >
+                    </div>
+                @endif
+
+                <!-- ✅ NEW IMAGE UPLOAD -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Change Image
+                    </label>
+                    <input type="file" 
+                           name="image"
+                           onchange="previewImage(event)"
+                           class="w-full px-4 py-2 border rounded-lg bg-white">
+                    
+                    <!-- Preview -->
+                    <img id="preview" 
+                         class="mt-3 hidden w-full h-48 object-cover rounded-lg">
+                </div>
 
                 <!-- Title -->
                 <div class="mb-6">
@@ -62,5 +92,18 @@
 
     </div>
 </section>
+
+<!-- ✅ IMAGE PREVIEW SCRIPT -->
+<script>
+function previewImage(event) {
+    const reader = new FileReader();
+    reader.onload = function(){
+        const img = document.getElementById('preview');
+        img.src = reader.result;
+        img.classList.remove('hidden');
+    }
+    reader.readAsDataURL(event.target.files[0]);
+}
+</script>
 
 @endsection
