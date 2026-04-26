@@ -26,7 +26,7 @@
                     {{-- Project Image --}}
                     @if($project->image)
     <img 
-        src="{{ asset('storage/' . $project->image) }}" 
+        src="{{ $project->image }}" 
         alt="{{ $project->title }}"
         class="w-full h-52 object-cover rounded-t-xl"
     >

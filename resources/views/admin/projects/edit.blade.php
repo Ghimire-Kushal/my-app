@@ -11,46 +11,41 @@
                 Edit Project
             </h2>
 
-            <!-- ✅ IMPORTANT: enctype added -->
             <form action="{{ route('admin.projects.update', $project->id) }}" 
                   method="POST"
                   enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
-                <!-- ✅ CURRENT IMAGE -->
+                {{-- CURRENT IMAGE --}}
                 @if($project->image)
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-gray-700 mb-2">
                             Current Image
                         </label>
-                        <img 
-                            src="{{ asset('storage/' . $project->image) }}" 
-                            class="w-full h-48 object-cover rounded-lg shadow"
-                        >
+
+                        <img src="{{ $project->image }}"
+                             class="w-full h-56 object-cover rounded-lg border">
                     </div>
                 @endif
 
-                <!-- ✅ NEW IMAGE UPLOAD -->
+                {{-- CHANGE IMAGE --}}
                 <div class="mb-6">
                     <label class="block text-sm font-medium text-gray-700 mb-2">
                         Change Image
                     </label>
+
                     <input type="file" 
                            name="image"
-                           onchange="previewImage(event)"
-                           class="w-full px-4 py-2 border rounded-lg bg-white">
-                    
-                    <!-- Preview -->
-                    <img id="preview" 
-                         class="mt-3 hidden w-full h-48 object-cover rounded-lg">
+                           class="w-full px-4 py-2 border rounded-lg">
                 </div>
 
-                <!-- Title -->
+                {{-- TITLE --}}
                 <div class="mb-6">
                     <label class="block text-sm font-medium text-gray-700 mb-2">
                         Project Title
                     </label>
+
                     <input type="text" 
                            name="title"
                            value="{{ old('title', $project->title) }}"
@@ -59,11 +54,12 @@
                            required>
                 </div>
 
-                <!-- Description -->
+                {{-- DESCRIPTION --}}
                 <div class="mb-6">
                     <label class="block text-sm font-medium text-gray-700 mb-2">
                         Description
                     </label>
+
                     <textarea name="description"
                               rows="4"
                               class="w-full px-4 py-3 border rounded-lg 
@@ -71,7 +67,7 @@
                               required>{{ old('description', $project->description) }}</textarea>
                 </div>
 
-                <!-- Buttons -->
+                {{-- BUTTONS --}}
                 <div class="flex gap-4">
                     <button type="submit"
                             class="px-6 py-3 bg-indigo-600 text-white rounded-lg
@@ -92,18 +88,5 @@
 
     </div>
 </section>
-
-<!-- ✅ IMAGE PREVIEW SCRIPT -->
-<script>
-function previewImage(event) {
-    const reader = new FileReader();
-    reader.onload = function(){
-        const img = document.getElementById('preview');
-        img.src = reader.result;
-        img.classList.remove('hidden');
-    }
-    reader.readAsDataURL(event.target.files[0]);
-}
-</script>
 
 @endsection

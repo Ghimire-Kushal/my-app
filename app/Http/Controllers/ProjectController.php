@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class ProjectController extends Controller
 {
@@ -48,7 +48,7 @@ class ProjectController extends Controller
             'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
-        // Generate slug
+        // ✅ Generate slug
         $slug = Str::slug($validated['title']);
         if (Project::where('slug', $slug)->exists()) {
             $slug .= '-' . time();
@@ -56,10 +56,13 @@ class ProjectController extends Controller
 
         $validated['slug'] = $slug;
 
-        // Upload image (STORE ONLY PATH)
+        // ✅ Upload to Cloudinary (NOT local storage)
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')
-                ->store('projects', 'public'); // storage/app/public/projects/xxx.jpg
+            $uploaded = Cloudinary::upload(
+                $request->file('image')->getRealPath()
+            );
+
+            $validated['image'] = $uploaded->getSecurePath(); // FULL URL
         }
 
         Project::create($validated);
@@ -82,7 +85,7 @@ class ProjectController extends Controller
             'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
-        // Update slug only if title changed
+        // ✅ Update slug if changed
         if ($project->title !== $validated['title']) {
             $slug = Str::slug($validated['title']);
 
@@ -95,16 +98,13 @@ class ProjectController extends Controller
             $validated['slug'] = $slug;
         }
 
-        // Replace image
+        // ✅ Upload new image (Cloudinary)
         if ($request->hasFile('image')) {
+            $uploaded = Cloudinary::upload(
+                $request->file('image')->getRealPath()
+            );
 
-            // Delete old image
-            if ($project->image && Storage::disk('public')->exists($project->image)) {
-                Storage::disk('public')->delete($project->image);
-            }
-
-            $validated['image'] = $request->file('image')
-                ->store('projects', 'public');
+            $validated['image'] = $uploaded->getSecurePath();
         }
 
         $project->update($validated);
@@ -116,10 +116,7 @@ class ProjectController extends Controller
 
     public function destroy(Project $project)
     {
-        // Delete image
-        if ($project->image && Storage::disk('public')->exists($project->image)) {
-            Storage::disk('public')->delete($project->image);
-        }
+        // ❌ DO NOT delete from local storage anymore
 
         $project->delete();
 
