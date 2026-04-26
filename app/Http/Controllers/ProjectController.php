@@ -45,22 +45,21 @@ class ProjectController extends Controller
         $validated = $request->validate([
             'title'       => 'required|string|max:255|unique:projects,title',
             'description' => 'required|string',
-            'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|dimensions:min_width=200,min_height=200|max:2048',
+            'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         // Generate slug
         $slug = Str::slug($validated['title']);
-
         if (Project::where('slug', $slug)->exists()) {
             $slug .= '-' . time();
         }
 
         $validated['slug'] = $slug;
 
-        // Upload image
+        // Upload image (STORE ONLY PATH)
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')
-                ->store('projects', 'public');
+                ->store('projects', 'public'); // storage/app/public/projects/xxx.jpg
         }
 
         Project::create($validated);
@@ -80,12 +79,11 @@ class ProjectController extends Controller
         $validated = $request->validate([
             'title'       => 'required|string|max:255|unique:projects,title,' . $project->id,
             'description' => 'required|string',
-            'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|dimensions:min_width=200,min_height=200|max:2048',
+            'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
-        // Regenerate slug only if title changed
+        // Update slug only if title changed
         if ($project->title !== $validated['title']) {
-
             $slug = Str::slug($validated['title']);
 
             if (Project::where('slug', $slug)
@@ -97,12 +95,11 @@ class ProjectController extends Controller
             $validated['slug'] = $slug;
         }
 
-        // Replace image if uploaded
+        // Replace image
         if ($request->hasFile('image')) {
 
-            // Delete old image safely
-            if ($project->image &&
-                Storage::disk('public')->exists($project->image)) {
+            // Delete old image
+            if ($project->image && Storage::disk('public')->exists($project->image)) {
                 Storage::disk('public')->delete($project->image);
             }
 
@@ -119,9 +116,8 @@ class ProjectController extends Controller
 
     public function destroy(Project $project)
     {
-        // Delete image safely
-        if ($project->image &&
-            Storage::disk('public')->exists($project->image)) {
+        // Delete image
+        if ($project->image && Storage::disk('public')->exists($project->image)) {
             Storage::disk('public')->delete($project->image);
         }
 

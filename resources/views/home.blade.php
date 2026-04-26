@@ -146,18 +146,16 @@
                             overflow-hidden flex flex-col">
 
                     {{-- Image --}}
-                   @if(!empty($project->image))
+                   @if($project->image)
     <img 
-        src="{{ asset('storage/' . $project->image) }}" 
-        alt="{{ $project->title }}" 
-        class="card-img-top"
+        src="{{ asset('storage/' . $project->image) }}"
+        alt="{{ $project->title }}"
         style="height:200px; width:100%; object-fit:cover;"
     >
 @else
     <img 
-        src="{{ asset('images/default.png') }}" 
-        alt="No Image" 
-        class="card-img-top"
+        src="{{ asset('images/default.png') }}"
+        alt="No Image"
         style="height:200px; width:100%; object-fit:cover;"
     >
 @endif
