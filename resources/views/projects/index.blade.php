@@ -24,7 +24,7 @@
                             transition duration-500 overflow-hidden">
 
                     {{-- Project Image --}}
-                    {{-- Project Image --}}
+
 @if(!empty($project->image) && filter_var($project->image, FILTER_VALIDATE_URL))
     <img 
         src="{{ $project->image }}" 

@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Cloudinary\Api\Upload\UploadApi;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class ProjectController extends Controller
 {
-    /* FRONTEND */
+    /* ================= FRONTEND ================= */
 
     public function index()
     {
@@ -27,7 +27,7 @@ class ProjectController extends Controller
         return view('projects.show', compact('project', 'relatedProjects'));
     }
 
-    /* ADMIN */
+    /* ================= ADMIN ================= */
 
     public function adminIndex()
     {
@@ -48,26 +48,28 @@ class ProjectController extends Controller
             'image' => 'nullable|image|max:2048',
         ]);
 
-        // slug
+        // ✅ Generate slug
         $slug = Str::slug($validated['title']);
         if (Project::where('slug', $slug)->exists()) {
             $slug .= '-' . time();
         }
         $validated['slug'] = $slug;
 
-        // upload
+        // ✅ Upload image to Cloudinary
         if ($request->hasFile('image')) {
-            $upload = (new UploadApi())->upload(
+
+            $upload = Cloudinary::upload(
                 $request->file('image')->getRealPath()
             );
 
-            $validated['image'] = $upload['secure_url'];
+            $validated['image'] = $upload->getSecurePath(); // ✅ FIXED
         }
 
         Project::create($validated);
 
-        return redirect()->route('admin.projects.index')
-            ->with('success', 'Project created!');
+        return redirect()
+            ->route('admin.projects.index')
+            ->with('success', 'Project created successfully!');
     }
 
     public function edit(Project $project)
@@ -83,35 +85,42 @@ class ProjectController extends Controller
             'image' => 'nullable|image|max:2048',
         ]);
 
-        // slug update
+        // ✅ Update slug if title changed
         if ($project->title !== $validated['title']) {
             $slug = Str::slug($validated['title']);
-            if (Project::where('slug', $slug)->where('id', '!=', $project->id)->exists()) {
+
+            if (Project::where('slug', $slug)
+                ->where('id', '!=', $project->id)
+                ->exists()) {
                 $slug .= '-' . time();
             }
+
             $validated['slug'] = $slug;
         }
 
-        // image update
+        // ✅ Upload new image (ONLY if new file selected)
         if ($request->hasFile('image')) {
-            $upload = (new UploadApi())->upload(
+
+            $upload = Cloudinary::upload(
                 $request->file('image')->getRealPath()
             );
 
-            $validated['image'] = $upload['secure_url'];
+            $validated['image'] = $upload->getSecurePath(); // ✅ FIXED
         }
 
         $project->update($validated);
 
-        return redirect()->route('admin.projects.index')
-            ->with('success', 'Project updated!');
+        return redirect()
+            ->route('admin.projects.index')
+            ->with('success', 'Project updated successfully!');
     }
 
     public function destroy(Project $project)
     {
         $project->delete();
 
-        return redirect()->route('admin.projects.index')
-            ->with('success', 'Project deleted!');
+        return redirect()
+            ->route('admin.projects.index')
+            ->with('success', 'Project deleted successfully!');
     }
 }
