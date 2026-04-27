@@ -48,21 +48,27 @@ class ProjectController extends Controller
             'image' => 'nullable|image|max:2048',
         ]);
 
-        // ✅ Generate slug
+        // ✅ SLUG
         $slug = Str::slug($validated['title']);
         if (Project::where('slug', $slug)->exists()) {
             $slug .= '-' . time();
         }
         $validated['slug'] = $slug;
 
-        // ✅ Upload image to Cloudinary
+        // ✅ SAFE CLOUDINARY UPLOAD
         if ($request->hasFile('image')) {
+            try {
+                $upload = Cloudinary::upload(
+                    $request->file('image')->getRealPath()
+                );
 
-            $upload = Cloudinary::upload(
-                $request->file('image')->getRealPath()
-            );
-
-            $validated['image'] = $upload->getSecurePath(); // ✅ FIXED
+                if ($upload) {
+                    $validated['image'] = $upload->getSecurePath();
+                }
+            } catch (\Exception $e) {
+                // prevent crash
+                return back()->with('error', 'Image upload failed: ' . $e->getMessage());
+            }
         }
 
         Project::create($validated);
@@ -85,7 +91,7 @@ class ProjectController extends Controller
             'image' => 'nullable|image|max:2048',
         ]);
 
-        // ✅ Update slug if title changed
+        // ✅ SLUG UPDATE
         if ($project->title !== $validated['title']) {
             $slug = Str::slug($validated['title']);
 
@@ -98,14 +104,19 @@ class ProjectController extends Controller
             $validated['slug'] = $slug;
         }
 
-        // ✅ Upload new image (ONLY if new file selected)
+        // ✅ SAFE IMAGE UPDATE
         if ($request->hasFile('image')) {
+            try {
+                $upload = Cloudinary::upload(
+                    $request->file('image')->getRealPath()
+                );
 
-            $upload = Cloudinary::upload(
-                $request->file('image')->getRealPath()
-            );
-
-            $validated['image'] = $upload->getSecurePath(); // ✅ FIXED
+                if ($upload) {
+                    $validated['image'] = $upload->getSecurePath();
+                }
+            } catch (\Exception $e) {
+                return back()->with('error', 'Image update failed: ' . $e->getMessage());
+            }
         }
 
         $project->update($validated);
