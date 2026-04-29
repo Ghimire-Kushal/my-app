@@ -68,9 +68,9 @@
                             overflow-hidden flex flex-col">
 
                     {{-- ✅ FIXED IMAGE --}}
-                    @php
+                    {{-- @php
                         use Illuminate\Support\Str;
-                    @endphp
+                    @endphp --}}
 
                     @if(!empty($project->image))
 
