@@ -2,6 +2,10 @@
 
 @section('content')
 
+@php
+    use Illuminate\Support\Str;
+@endphp
+
 <section class="py-24 bg-gray-50 min-h-screen">
     <div class="max-w-3xl mx-auto px-6">
 
@@ -18,14 +22,25 @@
                 @method('PUT')
 
                 {{-- CURRENT IMAGE --}}
-                @if($project->image)
+                @if(!empty($project->image))
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-gray-700 mb-2">
                             Current Image
                         </label>
 
-                        <img src="{{ $project->image }}"
-                             class="w-full h-56 object-cover rounded-lg border">
+                        @if(Str::startsWith($project->image, ['http://', 'https://']))
+                            {{-- Cloudinary --}}
+                            <img 
+                                src="{{ $project->image }}"
+                                class="w-full h-56 object-cover rounded-lg border"
+                            >
+                        @else
+                            {{-- Local --}}
+                            <img 
+                                src="{{ asset('storage/'.$project->image) }}"
+                                class="w-full h-56 object-cover rounded-lg border"
+                            >
+                        @endif
                     </div>
                 @endif
 
