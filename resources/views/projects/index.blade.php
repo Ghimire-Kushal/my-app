@@ -23,19 +23,20 @@
                             shadow-sm hover:shadow-2xl hover:-translate-y-1
                             transition duration-500 overflow-hidden">
 
-                    {{-- Project Image --}}
-
-@if(!empty($project->image) && filter_var($project->image, FILTER_VALIDATE_URL))
-    <img 
-        src="{{ $project->image }}" 
-        alt="{{ $project->title }}"
-        class="w-full h-52 object-cover rounded-t-xl"
-    >
-@else
-    <div class="w-full h-52 bg-gray-200 flex items-center justify-center">
-        <span class="text-gray-400">No Image</span>
-    </div>
-@endif
+                    {{-- ✅ Project Image (FIXED) --}}
+                    @if(!empty($project->image))
+                        <img 
+                            src="{{ $project->image }}" 
+                            alt="{{ $project->title }}"
+                            class="w-full h-52 object-cover rounded-t-xl"
+                            loading="lazy"
+                            onerror="this.src='https://via.placeholder.com/400x300?text=No+Image';"
+                        >
+                    @else
+                        <div class="w-full h-52 bg-gray-200 flex items-center justify-center">
+                            <span class="text-gray-400">No Image</span>
+                        </div>
+                    @endif
 
                     <div class="p-6">
 
