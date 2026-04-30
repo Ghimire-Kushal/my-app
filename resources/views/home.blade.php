@@ -46,7 +46,7 @@
         </div>
 
         {{-- SOCIAL ICONS --}}
-        <div class="flex items-center gap-6 text-2xl text-gray-600">
+        <div class="flex items-center gap-8 text-4xl text-gray-600">
 
             {{-- GitHub --}}
             <a href="https://github.com/Ghimire-Kushal"
@@ -172,7 +172,7 @@
     @endforelse
 
 </div>
-```
+
 
 </div>
 
