@@ -6,7 +6,7 @@
 
 <section class="relative overflow-hidden bg-white py-28">
 
-```
+
 <div class="max-w-5xl mx-auto px-6 text-center">
 
     <div class="inline-flex items-center px-5 py-2 rounded-full 
@@ -27,24 +27,53 @@
         clean architecture, secure authentication systems, and modern UI.
     </p>
 
-    <div class="mt-10 flex justify-center gap-6 flex-wrap">
+    {{-- BUTTONS + SOCIAL --}}
+    <div class="mt-10 flex flex-col items-center gap-6">
 
-        <a href="#projects"
-           class="px-8 py-3 rounded-xl bg-indigo-600 text-white font-semibold 
-                  shadow-lg hover:bg-indigo-700 hover:shadow-xl transition duration-300">
-            View My Work →
-        </a>
+        {{-- Buttons --}}
+        <div class="flex justify-center gap-6 flex-wrap">
+            <a href="#projects"
+               class="px-8 py-3 rounded-xl bg-indigo-600 text-white font-semibold 
+                      shadow-lg hover:bg-indigo-700 hover:shadow-xl transition duration-300">
+                View My Work →
+            </a>
 
-        <a href="{{ route('resume.download') }}"
-           class="px-8 py-3 rounded-xl border border-gray-300 text-gray-800 font-medium
-                  hover:border-indigo-600 hover:text-indigo-600 transition duration-300">
-            Download Resume
-        </a>
+            <a href="{{ route('resume.download') }}"
+               class="px-8 py-3 rounded-xl border border-gray-300 text-gray-800 font-medium
+                      hover:border-indigo-600 hover:text-indigo-600 transition duration-300">
+                Download Resume
+            </a>
+        </div>
+
+        {{-- SOCIAL ICONS --}}
+        <div class="flex items-center gap-6 text-2xl text-gray-600">
+
+            {{-- GitHub --}}
+            <a href="https://github.com/Ghimire-Kushal"
+               target="_blank"
+               class="hover:text-black transition transform hover:scale-110">
+                <i class="fab fa-github"></i>
+            </a>
+
+            {{-- LinkedIn --}}
+            <a href="https://www.linkedin.com/in/kushal-ghimire-9448093b1/"
+               target="_blank"
+               class="hover:text-blue-600 transition transform hover:scale-110">
+                <i class="fab fa-linkedin"></i>
+            </a>
+
+            {{-- Email --}}
+            <a href="mailto:kushal.upr@gmail.com"
+               class="hover:text-red-500 transition transform hover:scale-110">
+                <i class="fas fa-envelope"></i>
+            </a>
+
+        </div>
 
     </div>
 
 </div>
-```
+
 
 </section>
 
@@ -52,112 +81,102 @@
 
 <section id="projects" class="py-24 bg-gray-50">
 
-```
 <div class="max-w-6xl mx-auto px-6">
 
-    <div class="text-center mb-14">
-        <h2 class="text-3xl font-bold text-gray-900">
-            Featured Projects
-        </h2>
-        <p class="text-gray-500 mt-3">
-            Real-world applications built with Laravel
-        </p>
-    </div>
+```
+<div class="text-center mb-14">
+    <h2 class="text-3xl font-bold text-gray-900">
+        Featured Projects
+    </h2>
+    <p class="text-gray-500 mt-3">
+        Real-world applications built with Laravel
+    </p>
+</div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
 
-        @forelse($projects as $project)
+    @forelse($projects as $project)
 
-            <div class="bg-white rounded-2xl shadow-md hover:shadow-xl 
-                        hover:-translate-y-1 transition duration-300 
-                        overflow-hidden flex flex-col">
+        <div class="bg-white rounded-2xl shadow-md hover:shadow-xl 
+                    hover:-translate-y-1 transition duration-300 
+                    overflow-hidden flex flex-col">
 
-                {{-- ✅ FIXED IMAGE --}}
-                @if(!empty($project->image))
+            {{-- IMAGE --}}
+            @if(!empty($project->image))
 
-                    @if(\Illuminate\Support\Str::startsWith($project->image, ['http://', 'https://']))
-                        {{-- Cloudinary --}}
-                        <img 
-                            src="{{ $project->image }}"
-                            alt="{{ $project->title }}"
-                            class="w-full h-52 object-cover"
-                            onerror="this.src='https://via.placeholder.com/400x300?text=No+Image';"
-                        >
-                    @else
-                        {{-- Local --}}
-                        <img 
-                            src="{{ asset('storage/'.$project->image) }}"
-                            alt="{{ $project->title }}"
-                            class="w-full h-52 object-cover"
-                            onerror="this.src='https://via.placeholder.com/400x300?text=No+Image';"
-                        >
-                    @endif
-
+                @if(\Illuminate\Support\Str::startsWith($project->image, ['http://', 'https://']))
+                    <img 
+                        src="{{ $project->image }}"
+                        alt="{{ $project->title }}"
+                        class="w-full h-52 object-cover"
+                        onerror="this.src='https://via.placeholder.com/400x300?text=No+Image';"
+                    >
                 @else
-                    {{-- Fallback --}}
-                    <div class="w-full h-52 bg-gray-200 flex items-center justify-center">
-                        <span class="text-gray-400">No Image</span>
-                    </div>
+                    <img 
+                        src="{{ asset('storage/'.$project->image) }}"
+                        alt="{{ $project->title }}"
+                        class="w-full h-52 object-cover"
+                        onerror="this.src='https://via.placeholder.com/400x300?text=No+Image';"
+                    >
                 @endif
 
+            @else
+                <div class="w-full h-52 bg-gray-200 flex items-center justify-center">
+                    <span class="text-gray-400">No Image</span>
+                </div>
+            @endif
 
-                <div class="p-6 flex flex-col flex-1">
 
-                    <h3 class="text-xl font-semibold text-gray-900">
-                        {{ $project->title }}
-                    </h3>
+            <div class="p-6 flex flex-col flex-1">
 
-                    <p class="text-gray-600 text-sm mt-3 flex-1">
-                        {{ \Illuminate\Support\Str::limit($project->description, 110) }}
-                    </p>
+                <h3 class="text-xl font-semibold text-gray-900">
+                    {{ $project->title }}
+                </h3>
 
-                    <div class="mt-4 flex flex-wrap gap-2 text-xs font-medium">
-                        <span class="bg-indigo-100 text-indigo-600 px-3 py-1 rounded-full">Laravel</span>
-                        <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full">MySQL</span>
-                        <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full">Tailwind</span>
-                    </div>
+                <p class="text-gray-600 text-sm mt-3 flex-1">
+                    {{ \Illuminate\Support\Str::limit($project->description, 110) }}
+                </p>
 
-                    <div class="mt-6 flex gap-4">
+                <div class="mt-6 flex gap-4">
 
-                        <a href="{{ route('projects.show', $project->slug) }}"
-                           class="text-indigo-600 font-medium hover:underline">
-                            Details →
+                    <a href="{{ route('projects.show', $project->slug) }}"
+                       class="text-indigo-600 font-medium hover:underline">
+                        Details →
+                    </a>
+
+                    @if(!empty($project->github_link))
+                        <a href="{{ $project->github_link }}"
+                           target="_blank"
+                           class="text-gray-600 hover:text-indigo-600 transition">
+                            GitHub
                         </a>
+                    @endif
 
-                        @if(!empty($project->github_link))
-                            <a href="{{ $project->github_link }}"
-                               target="_blank"
-                               class="text-gray-600 font-medium hover:text-indigo-600 transition">
-                                GitHub
-                            </a>
-                        @endif
-
-                        @if(!empty($project->link))
-                            <a href="{{ $project->link }}"
-                               target="_blank"
-                               class="text-green-600 font-medium hover:underline">
-                                Live
-                            </a>
-                        @endif
-
-                    </div>
+                    @if(!empty($project->link))
+                        <a href="{{ $project->link }}"
+                           target="_blank"
+                           class="text-green-600 hover:underline">
+                            Live
+                        </a>
+                    @endif
 
                 </div>
-            </div>
 
-        @empty
-            <div class="col-span-full text-center text-gray-500">
-                No projects added yet.
             </div>
-        @endforelse
+        </div>
 
-    </div>
+    @empty
+        <div class="col-span-full text-center text-gray-500">
+            No projects added yet.
+        </div>
+    @endforelse
+
 </div>
 ```
 
-</section>
+</div>
 
-{{-- ================= FOOTER ================= --}}
+</section>
 
 <footer class="bg-gray-900 text-gray-400 py-10 text-center text-sm">
     © {{ date('Y') }} Kushal Ghimire. All rights reserved.
