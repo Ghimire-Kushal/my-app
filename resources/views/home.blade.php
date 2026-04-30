@@ -17,7 +17,7 @@
         </h1>
 
         <h2 class="mt-4 text-xl md:text-2xl text-indigo-600 font-semibold">
-            Laravel Developer | Backend Specialist
+            Laravel Developer | Backend Specialist | Vibe Coder
         </h2>
 
         <p class="mt-6 text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
