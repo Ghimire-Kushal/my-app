@@ -83,7 +83,7 @@
 
 <div class="max-w-6xl mx-auto px-6">
 
-```
+
 <div class="text-center mb-14">
     <h2 class="text-3xl font-bold text-gray-900">
         Featured Projects
