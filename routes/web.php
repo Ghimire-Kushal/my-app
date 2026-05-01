@@ -8,6 +8,7 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,18 +19,19 @@ use App\Http\Controllers\ContactController;
 // Home
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// Contact
+// Contact Page
 Route::view('/contact', 'contact')->name('contact');
 
+// Contact Form Submit (rate limited)
 Route::post('/contact', [ContactController::class, 'store'])
     ->name('contact.store')
     ->middleware('throttle:3,1');
 
-// Projects (PUBLIC → uses slug)
+// Projects (Public)
 Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
 Route::get('/projects/{project:slug}', [ProjectController::class, 'show'])->name('projects.show');
 
-// Resume download
+// Resume Download
 Route::get('/download-resume', function () {
     $path = public_path('resume.pdf');
     abort_if(!file_exists($path), 404);
@@ -39,7 +41,17 @@ Route::get('/download-resume', function () {
 
 /*
 |--------------------------------------------------------------------------
-| Authenticated User Routes
+| CUSTOM REGISTER ROUTE (/kushal)
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/kushal', [RegisteredUserController::class, 'create'])->name('kushal.register');
+Route::post('/kushal', [RegisteredUserController::class, 'store'])->name('kushal.store');
+
+
+/*
+|--------------------------------------------------------------------------
+| Authenticated Routes
 |--------------------------------------------------------------------------
 */
 
@@ -55,21 +67,21 @@ Route::middleware('auth')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| Admin Routes (IMPORTANT FIXED)
+| Admin Routes
 |--------------------------------------------------------------------------
 */
 
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 
     // Dashboard
-    Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
 
-    // Redirect /admin → dashboard ✅ FIXED
+    // Redirect /admin → dashboard
     Route::get('/', function () {
         return redirect()->route('admin.dashboard');
     });
 
-    // Projects (ADMIN → uses ID)
+    // Admin Projects
     Route::get('/projects', [ProjectController::class, 'adminIndex'])->name('projects.index');
 
     Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
@@ -84,7 +96,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| Redirect public dashboard
+| Redirect Public Dashboard
 |--------------------------------------------------------------------------
 */
 
@@ -95,7 +107,7 @@ Route::get('/dashboard', function () {
 
 /*
 |--------------------------------------------------------------------------
-| TEMP DB FIX (REMOVE IN PRODUCTION ⚠️)
+| TEMP DB FIX (REMOVE IN PRODUCTION)
 |--------------------------------------------------------------------------
 */
 
@@ -107,7 +119,7 @@ Route::get('/fix-db', function () {
 
 /*
 |--------------------------------------------------------------------------
-| Auth routes (DO NOT REMOVE)
+| Auth Routes
 |--------------------------------------------------------------------------
 */
 

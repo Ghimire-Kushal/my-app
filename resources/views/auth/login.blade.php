@@ -67,12 +67,12 @@
                 {{ __('Log in') }}
             </x-primary-button>
         </div>
-        <p class="mt-4 text-sm text-center">
+        {{-- <p class="mt-4 text-sm text-center">
     Don't have an account?
     <a href="{{ route('register') }}" class="text-blue-600 underline">
         Register
     </a>
-</p>
+</p> --}}
 
     </form>
 
