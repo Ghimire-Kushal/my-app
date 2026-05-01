@@ -17,6 +17,7 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 | Guest Route
 |--------------------------------------------------------------------------
 */
+//f
 
 Route::middleware('guest')->group(function () {
 
