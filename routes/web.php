@@ -70,28 +70,29 @@ Route::middleware('auth')->group(function () {
 | Admin Routes
 |--------------------------------------------------------------------------
 */
-
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 
-    // Dashboard
-    Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
 
-    // Redirect /admin → dashboard
-    Route::get('/', function () {
-        return redirect()->route('admin.dashboard');
-    });
+// FIX: direct route instead of redirect
+Route::get('/', [AdminController::class, 'index'])->name('dashboard');
 
-    // Admin Projects
-    Route::get('/projects', [ProjectController::class, 'adminIndex'])->name('projects.index');
+// Dashboard (optional duplicate)
+Route::get('/dashboard', [AdminController::class, 'index']);
 
-    Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
-    Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
+// Projects
+Route::get('/projects', [ProjectController::class, 'adminIndex'])->name('projects.index');
 
-    Route::get('/projects/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
-    Route::put('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
+Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
+Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
 
-    Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
+Route::get('/projects/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
+Route::put('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
+
+Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
+
+
 });
+
 
 
 /*
