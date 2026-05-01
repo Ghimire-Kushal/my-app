@@ -115,6 +115,13 @@ Route::get('/dashboard', function () {
 Route::get('/fix-db', function () {
     Artisan::call('migrate:fresh --seed --force');
     return 'Database fixed!';
+}); 
+Route::get('/test-mail', function () {
+    \Mail::raw('Test Email from Render', function ($msg) {
+        $msg->to('kushal.upr@gmail.com')->subject('TEST');
+    });
+
+    return 'Mail Sent';
 });
 
 

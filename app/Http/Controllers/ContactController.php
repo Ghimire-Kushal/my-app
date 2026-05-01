@@ -10,7 +10,7 @@ class ContactController extends Controller
 {
     public function store(Request $request)
     {
-        // 1️⃣ Validate input
+        // ✅ Validate input
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
@@ -19,24 +19,28 @@ class ContactController extends Controller
 
         try {
 
-            // 2️⃣ Send email
+            // ✅ Send email
             Mail::raw(
-                "Name: {$validated['name']}\nEmail: {$validated['email']}\n\nMessage:\n{$validated['message']}",
+                "New Contact Message\n\n" .
+                "Name: {$validated['name']}\n" .
+                "Email: {$validated['email']}\n\n" .
+                "Message:\n{$validated['message']}",
                 function ($message) use ($validated) {
-                    $message->to('kushal.81318@apollointcollege.edu.np')
-                            ->subject('New Contact Message')
-                            ->replyTo($validated['email']);
+
+                    $message->to('kushal.upr@gmail.com') // ✅ RECEIVE HERE
+                            ->subject('📩 New Contact Message')
+                            ->replyTo($validated['email'], $validated['name']);
                 }
             );
 
-            return back()->with('success', 'Message sent successfully!');
+            return back()->with('success', '✅ Message sent successfully!');
 
         } catch (\Exception $e) {
 
-            // 3️⃣ Log error instead of crashing site
-            Log::error('Mail Error: ' . $e->getMessage());
+            // ✅ Log full error (VERY IMPORTANT)
+            Log::error('MAIL ERROR: ' . $e->getMessage());
 
-            return back()->with('error', 'Failed to send message. Please try again later.');
+            return back()->with('error', '❌ Failed to send message. Please try again later.');
         }
     }
 }
