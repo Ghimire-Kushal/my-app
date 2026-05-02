@@ -108,7 +108,7 @@ Route::get('/dashboard', function () {
 Route::get('/test-mail', function () {
 
     config([
-        'mail.mailers.resend.key' => env('RESEND_API_KEY'),
+        'services.resend.key' => env('RESEND_API_KEY'), // ✅ CORRECT KEY
     ]);
 
     Mail::raw('Test Email from Kushal Portfolio', function ($msg) {
