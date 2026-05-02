@@ -1,5 +1,5 @@
 <?php
-
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 
@@ -116,9 +116,13 @@ Route::get('/fix-db', function () {
     Artisan::call('migrate:fresh --seed --force');
     return 'Database fixed!';
 }); 
+
+
 Route::get('/test-mail', function () {
-    \Mail::raw('Test Email from Render', function ($msg) {
-        $msg->to('kushal.upr@gmail.com')->subject('TEST');
+    Mail::raw('Test Email from Kushal Portfolio', function ($msg) {
+        $msg->to('kushal.upr@gmail.com')
+            ->from('hello@kushalghimire57.com.np', 'Kushal Portfolio') // ✅ IMPORTANT
+            ->subject('TEST');
     });
 
     return 'Mail Sent';
