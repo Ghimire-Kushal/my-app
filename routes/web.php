@@ -121,18 +121,24 @@ Route::get('/fix-db', function () {
 Route::get('/test-mail', function () {
     Mail::raw('Test Email from Kushal Portfolio', function ($msg) {
         $msg->to('kushal.upr@gmail.com')
-            ->from('hello@kushalghimire57.com.np', 'Kushal Portfolio') // ✅ IMPORTANT
             ->subject('TEST');
     });
 
-    return 'Mail Sent';
+    return "Mail Sent";
 });
-
 
 /*
 |--------------------------------------------------------------------------
 | Auth Routes
 |--------------------------------------------------------------------------
 */
+Route::get('/clear-cache', function () {
+    Artisan::call('config:clear');
+    Artisan::call('cache:clear');
+    Artisan::call('config:cache');
+    Artisan::call('optimize:clear');
+
+    return "Cache Cleared ✅";
+});
 
 require __DIR__.'/auth.php';
