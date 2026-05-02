@@ -104,11 +104,10 @@ Route::get('/dashboard', function () {
 | 🔥 TEST MAIL ROUTE (TEMP)
 |--------------------------------------------------------------------------
 */
-
 Route::get('/test-mail', function () {
 
     config([
-        'services.resend.key' => env('RESEND_API_KEY'), // ✅ CORRECT KEY
+        'services.resend.key' => 're_UjaisRJJ_3NNgZ88ZFUG5Cg7d165sGFbV', // 🔥 direct key
     ]);
 
     Mail::raw('Test Email from Kushal Portfolio', function ($msg) {
@@ -119,7 +118,6 @@ Route::get('/test-mail', function () {
 
     return "Mail Sent ✅";
 });
-
 
 /*
 |--------------------------------------------------------------------------
