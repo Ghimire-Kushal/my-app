@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
@@ -41,7 +42,7 @@ Route::get('/download-resume', function () {
 
 /*
 |--------------------------------------------------------------------------
-| CUSTOM REGISTER ROUTE (/kushal)
+| Custom Register Route (/kushal)
 |--------------------------------------------------------------------------
 */
 
@@ -57,7 +58,6 @@ Route::post('/kushal', [RegisteredUserController::class, 'store'])->name('kushal
 
 Route::middleware('auth')->group(function () {
 
-    // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -67,37 +67,30 @@ Route::middleware('auth')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| Admin Routess
+| Admin Routes
 |--------------------------------------------------------------------------
 */
+
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 
+    Route::get('/', [AdminController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [AdminController::class, 'index']);
 
-// FIX: direct route instead of redirect
-Route::get('/', [AdminController::class, 'index'])->name('dashboard');
+    Route::get('/projects', [ProjectController::class, 'adminIndex'])->name('projects.index');
 
-// Dashboard (optional duplicate)
-Route::get('/dashboard', [AdminController::class, 'index']);
+    Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
+    Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
 
-// Projects
-Route::get('/projects', [ProjectController::class, 'adminIndex'])->name('projects.index');
+    Route::get('/projects/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
+    Route::put('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
 
-Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
-Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
-
-Route::get('/projects/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
-Route::put('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
-
-Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
-
-
+    Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
 });
-
 
 
 /*
 |--------------------------------------------------------------------------
-| Redirect Public Dashboard
+| Redirect Dashboard
 |--------------------------------------------------------------------------
 */
 
@@ -108,33 +101,28 @@ Route::get('/dashboard', function () {
 
 /*
 |--------------------------------------------------------------------------
-| TEMP DB FIX (REMOVE IN PRODUCTION)
+| 🔥 TEST MAIL ROUTE (TEMP)
 |--------------------------------------------------------------------------
 */
-
-Route::get('/fix-db', function () {
-    Artisan::call('migrate:fresh --seed --force');
-    return 'Database fixed!';
-}); 
-
 
 Route::get('/test-mail', function () {
     Mail::raw('Test Email from Kushal Portfolio', function ($msg) {
         $msg->to('kushal.upr@gmail.com')
-            ->subject('TEST');
+            ->from('hello@kushalghimire57.com.np', 'Kushal Portfolio') // ✅ FIXED
+            ->subject('TEST EMAIL');
     });
 
-    return "Mail Sent";
+    return "Mail Sent ✅";
 });
+
 
 /*
 |--------------------------------------------------------------------------
-| Auth Routess
+| ⚠️ DEV ROUTES (REMOVE AFTER TESTING)
 |--------------------------------------------------------------------------
 */
-Route::get('/debug-key', function () {
-    return env('RESEND_API_KEY');
-});
+
+// ⚠️ Remove this after setup
 Route::get('/clear-cache', function () {
     Artisan::call('config:clear');
     Artisan::call('cache:clear');
@@ -143,5 +131,12 @@ Route::get('/clear-cache', function () {
 
     return "Cache Cleared ✅";
 });
+
+// ⚠️ REMOVE THIS IN PRODUCTION
+Route::get('/fix-db', function () {
+    Artisan::call('migrate:fresh --seed --force');
+    return 'Database fixed!';
+});
+
 
 require __DIR__.'/auth.php';
