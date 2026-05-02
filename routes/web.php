@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Artisan;
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProjectController;
@@ -101,14 +100,11 @@ Route::get('/dashboard', function () {
 
 /*
 |--------------------------------------------------------------------------
-| 🔥 TEST MAIL ROUTE (TEMP)
+| TEST MAIL ROUTE (REMOVE AFTER TESTING)
 |--------------------------------------------------------------------------
 */
-Route::get('/test-mail', function () {
 
-    config([
-        'services.resend.key' => 're_UjaisRJJ_3NNgZ88ZFUG5Cg7d165sGFbV', // 🔥 direct key
-    ]);
+Route::get('/test-mail', function () {
 
     Mail::raw('Test Email from Kushal Portfolio', function ($msg) {
         $msg->to('kushal.upr@gmail.com')
@@ -117,28 +113,6 @@ Route::get('/test-mail', function () {
     });
 
     return "Mail Sent ✅";
-});
-
-/*
-|--------------------------------------------------------------------------
-| ⚠️ DEV ROUTES (REMOVE AFTER TESTING)
-|--------------------------------------------------------------------------
-*/
-
-// ⚠️ Remove this after setup
-Route::get('/clear-cache', function () {
-    Artisan::call('config:clear');
-    Artisan::call('cache:clear');
-    Artisan::call('config:cache');
-    Artisan::call('optimize:clear');
-
-    return "Cache Cleared ✅";
-});
-
-// ⚠️ REMOVE THIS IN PRODUCTION
-Route::get('/fix-db', function () {
-    Artisan::call('migrate:fresh --seed --force');
-    return 'Database fixed!';
 });
 
 
