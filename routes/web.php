@@ -132,6 +132,9 @@ Route::get('/test-mail', function () {
 | Auth Routess
 |--------------------------------------------------------------------------
 */
+Route::get('/debug-key', function () {
+    return env('RESEND_API_KEY');
+});
 Route::get('/clear-cache', function () {
     Artisan::call('config:clear');
     Artisan::call('cache:clear');
