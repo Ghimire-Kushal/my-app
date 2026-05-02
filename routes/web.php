@@ -106,9 +106,14 @@ Route::get('/dashboard', function () {
 */
 
 Route::get('/test-mail', function () {
+
+    config([
+        'mail.mailers.resend.key' => env('RESEND_API_KEY'),
+    ]);
+
     Mail::raw('Test Email from Kushal Portfolio', function ($msg) {
         $msg->to('kushal.upr@gmail.com')
-            ->from('hello@kushalghimire57.com.np', 'Kushal Portfolio') // ✅ FIXED
+            ->from('hello@kushalghimire57.com.np', 'Kushal Portfolio')
             ->subject('TEST EMAIL');
     });
 
